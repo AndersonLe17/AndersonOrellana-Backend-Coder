@@ -50,7 +50,7 @@ Elimina el producto con **id** indicado.
 
 Devuelve el carrito con su arreglo de productos, a travez del _`param`_ que indica el codigo del carrito.
 
-### `Peticiones POST API Products`
+### `Peticiones POST API Carts`
 
 #### `http://localhost:8080/api/carts/`
 
