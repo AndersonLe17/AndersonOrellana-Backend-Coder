@@ -1,4 +1,4 @@
-# Coder Desafio N° 3
+# Coder Proyecto Backend
 
 ### `node run dev`
 
@@ -50,12 +50,12 @@ Elimina el producto con **id** indicado.
 
 Devuelve el carrito con su arreglo de productos, a travez del _`param`_ que indica el codigo del carrito.
 
-### `Peticiones POST API Products`
+### `Peticiones POST API Carts`
 
 #### `http://localhost:8080/api/carts/`
 
 Crea un nuevo carrito con un **id** auto incrementable y un Array vacio de productos.
 
-#### `http://localhost:8080/api/carts/:cid/product/:pid` (:pid => codigo del carrito, :pid => codigo del producto)
+#### `http://localhost:8080/api/carts/:cid/product/:pid` (:cid => codigo del carrito, :pid => codigo del producto)
 
 Agrega un producto al arreglo de productos del carrito indicado por el **id**.
