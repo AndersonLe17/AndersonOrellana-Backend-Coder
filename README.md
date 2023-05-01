@@ -9,6 +9,21 @@ Ejecuta el servidor express el cual esta corriendo en el puerto 8080.
 El proyecto ya cuenta con 10 registros de productos.
 Ademas de 1 carrito con 3 productos registrados;
 
+### `Motor de Plantillas Handlebars`
+
+#### `http://localhost:8080/`
+
+Muestra el index el cual tiene un Navbar con las opciones de navegacion.
+
+#### `http://localhost:8080/api/products/home`
+
+Muestra el listado de productos.
+
+#### `http://localhost:8080/api/products/realTimeProducts`
+
+Muestra el mismo listado pero tiene las funciones de agregar y elimar productos, 
+utiliza websocket para actualzar los productos cuando se de cada caso.
+
 ### `Peticiones GET API Products`
 
 #### `http://localhost:8080/api/products/`
