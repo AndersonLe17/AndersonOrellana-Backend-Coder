@@ -19,7 +19,7 @@ class ProductManager {
     prods.push(producto);
     await fs.promises.writeFile(this.path, JSON.stringify(prods));
     this.idIncrement++;
-    return {code: 201, status: 'Created', message: 'Producto agregado'};
+    return {code: 201, status: 'Created', message: 'Producto agregado', producto: producto};
   }
 
   async getProducts() {
@@ -37,9 +37,6 @@ class ProductManager {
   }
 
   async updateProduct(id, {title, description, price, thumbnail, code, stock, category, status}) {
-    // Validamos que todos los campos esten rellenados
-    // if (!this.validateDataProduct({title, description, price, thumbnail, code, stock, category, status})) return {code: 400, status: 'Bad Request', message: 'Todos los campos son requeridos'};
-
     const prodsJSON = await fs.promises.readFile(this.path, 'utf-8');
     const prods = JSON.parse(prodsJSON);
 
@@ -100,7 +97,8 @@ class ProductManager {
     } else {
       const prodsJSON = await fs.promises.readFile(this.path, 'utf-8');
       const prods = JSON.parse(prodsJSON);
-      this.idIncrement = prods.length + 1;
+      const ids = prods.map(p => p.id);
+      this.idIncrement = Math.max(...ids) + 1;
     }
   }
 }
