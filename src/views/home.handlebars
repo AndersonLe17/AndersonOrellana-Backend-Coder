@@ -18,7 +18,6 @@
             <table class="table table-hover" id="dtProducts">
                 <thead>
                     <tr>
-                        <th scope="col">Id</th>
                         <th scope="col">Producto</th>
                         <th scope="col">Descripción</th>
                         <th scope="col">Precio</th>
@@ -31,8 +30,7 @@
                 <tbody>
                     {{#products}}
                     <tr>
-                        <td>{{id}}</td>
-                        <td>{{title}}</td>
+                        <td>{{this.title}}</td>
                         <td>{{description}}</td>
                         <td>S/.{{price}}</td>
                         <td>{{code}}</td>

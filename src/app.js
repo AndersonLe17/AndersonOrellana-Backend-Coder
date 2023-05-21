@@ -1,6 +1,9 @@
 import express from "express";
+import mongoose from "mongoose";
+import 'dotenv/config';
 import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
+import messageRouter from "./routes/messages.routes.js";
 import { __dirname } from "./path.js";
 import multer from "multer";
 import { engine } from "express-handlebars";
@@ -9,7 +12,6 @@ import { Server } from "socket.io";
 
 // Configuracion
 const app = express();
-const PORT = 8080;
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, __dirname + '/public/img');
@@ -18,8 +20,8 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
-const server = app.listen(PORT, () => {
-    console.log(`Server on port ${PORT}`);
+const server = app.listen(process.env.PORT, () => {
+    console.log(`Server on port ${process.env.PORT}`);
 });
 // ServerIO
 const io = new Server(server);
@@ -33,15 +35,22 @@ app.set('io', io);
 // Middleware
 app.use(express.urlencoded({ extended: true })); // Permite poder realizar s    
 app.use(express.json()); // Permite ejecutar JSON en mi app
+//MongoDB
+mongoose.connect(process.env.URL_MONGODB_ATLAS)
+.then(() => console.log("DB is connected"))
+.catch((error) => console.log(`Error en MongoDB Atlas: ${error}`));
+
 const upload = (multer({storage: storage}));
 app.use((req, res, next) => {
     req.io = io;
     next();
 });
 
+
 //Routes
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
+app.use('/api/messages', messageRouter)
 app.use('/', express.static(__dirname + '/public'));
 app.post('/upload', upload.single('product'), (req, res) => {
     console.log(req.body);
@@ -53,9 +62,9 @@ app.post('/upload', upload.single('product'), (req, res) => {
 app.get('/', (req, res) => {
     res.render('index');
 });
-app.get('/chat', (req, res) => {
-    res.render('chat');
-});
+// app.get('/chat', (req, res) => {
+//     res.render('chat');
+// });
 
 const mensajes = [];
 
@@ -67,14 +76,4 @@ io.on('connection', (socket) => { // Cuando se establesca la conexion, ejecuta
         mensajes.push(info);
         io.emit("mensajes", mensajes);
     });
-    // console.log("Cliente Conectado");
-    
-    // socket.on('mensaje', info => {
-    //     console.log(info);
-    // });
-
-    // socket.on('user', info => {
-    //     console.log(info);
-    //     socket.emit("confirmacionAcceso", "Acceso concedido");
-    // });
 })

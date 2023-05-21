@@ -9,9 +9,8 @@ const table = $('#dtProducts').DataTable();
 socket.on("updateProduct", (data) => {
     if (data.code === 400) return;
     if (data.code == 201) {
-        const prod = data.producto;
+        const prod = data.payload;
         table.row.add([
-            prod.id,
             prod.title,
             prod.description,
             'S/.' + prod.price,
@@ -19,7 +18,7 @@ socket.on("updateProduct", (data) => {
             prod.stock,
             prod.category,
            ` <span class="badge rounded-pill text-bg-${(prod.status)? "success":"danger"}">${(prod.status)? "Activo":"Inactivo"}</span>`,
-           `<button class="btn btn-outline-danger btn-delete" data-product-id="${prod.id}"><i class="fa-regular fa-trash" data-icon-product-id="${prod.id}"></i></button>`
+           `<button class="btn btn-outline-danger btn-delete" data-product-id="${prod._id}"><i class="fa-regular fa-trash" data-icon-product-id="${prod._id}"></i></button>`
         ]).draw(false);
     } else if (data.code = 200) {
         const tr = document.querySelector(`[data-product-id="${data.id}"]`).parentElement.parentElement;
