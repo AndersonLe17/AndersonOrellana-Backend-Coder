@@ -2,7 +2,7 @@ import { Router } from "express";
 import ProductManager from "../ProductManager.js";
 import { ProductService } from '../services/ProductService.js'
 
-const productManager = new ProductManager('productos.json');
+// const productManager = new ProductManager('productos.json');
 const productService = new ProductService();
 const productRouter = Router();
 
@@ -21,14 +21,18 @@ productRouter.get('/home', async(req, res) => {
 });
 
 productRouter.get('/', async(req, res) => {
-    const limit = parseInt(req.query.limit);
+    const limit = parseInt(req.query.limit ?? 10);
+    const page = parseInt(req.query.page ?? 1);
+    const sort = (['asc','desc'].includes(req.query.sort))? req.query.sort: null;
+    const query = req.query.query;
+    const url = req.protocol + '://' + req.get('host') + req.originalUrl;
 
-    const result = await productService.getProducts();
+    const result = await productService.getProducts(limit,page,query,sort,url);
     // const products = await productManager.getProducts();
 
-    if(!limit) return res.status(result.code).send(result);
+    // if(!limit) return res.status(result.code).send(result);
     
-    result.payload = result.payload.slice(0,limit);
+    // result.payload = result.payload.slice(0,limit);
     res.status(result.code).send(result);
 });
 

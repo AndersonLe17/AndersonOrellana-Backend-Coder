@@ -2,13 +2,26 @@ import { productModel } from "../models/Products.js"
 
 export class ProductService {
 
-    getProducts = async() => {
+    getProducts = async(limit,page,query,sort,url) => {
         let response = { payload: null, error: null };
-        await productModel.find().then((res) => {
-            response.payload = res;
-            response.message = "Products found";
-            response.status = 'success';
-            response.code = 200;
+        const filter = (query == null)? {}:{category: query};
+        const options = (sort == null)? {limit: limit, page: page}: {limit: limit, page: page, sort: {price: sort}};
+        const href = new URL(url)
+        await productModel.paginate(filter, options).then((res) => {
+            response.payload = res.docs;
+            response.totalPages = res.totalPages;
+            response.prevPage = res.prevPage;
+            response.nextPage = res.nextPage;
+            response.page = res.page;
+            response.hasPrevPage = res.hasPrevPage;
+            response.hasNextPage = res.hasNextPage;
+            href.searchParams.set('page', res.prevPage);
+            response.prevLink = res.prevPage && href.toString();
+            href.searchParams.set('page', res.nextPage);
+            response.nextLink = res.nextPage && href.toString();
+            response.status = (isNaN(res.page))? 'error': (res.page > res.totalPages)? 'error':'success';
+            response.code = (isNaN(res.page))? 400: (res.page > res.totalPages)? 400 : 200;
+            response.message = (isNaN(res.page))? 'The page number is invalid': (res.page > res.totalPages)? 'The page number is invalid' : null;
         }).catch((error) => {
             response.error = error.errors;
             response.message = error.message;
@@ -105,8 +118,8 @@ export class ProductService {
         return response;
     }
 
-    updateStockProduct = async(product) => {
-        await productModel.updateOne({_id: product._id}, {stock: product.stock - 1});
+    updateStockProduct = async(product,cant) => {
+        await productModel.updateOne({_id: product._id}, {stock: product.stock + cant});
     }
 
 }
