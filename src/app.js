@@ -1,6 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import FileStore from "session-file-store";
+import MongoStore from "connect-mongo";
 import 'dotenv/config';
+import './utils/bcrypt.js';
 import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
 import messageRouter from "./routes/messages.routes.js";
@@ -12,6 +17,7 @@ import { Server } from "socket.io";
 
 // Configuracion
 const app = express();
+const fileStore = FileStore(session);
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, __dirname + '/public/img');
@@ -35,6 +41,17 @@ app.set('io', io);
 // Middleware
 app.use(express.urlencoded({ extended: true })); // Permite poder realizar s    
 app.use(express.json()); // Permite ejecutar JSON en mi app
+app.use(cookieParser());
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: process.env.URL_MONGODB_ATLAS,
+        mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
+        ttl: 15
+    }),
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
 //MongoDB
 mongoose.connect(process.env.URL_MONGODB_ATLAS)
 .then(() => console.log("DB is connected"))
@@ -62,9 +79,6 @@ app.post('/upload', upload.single('product'), (req, res) => {
 app.get('/', (req, res) => {
     res.render('index');
 });
-// app.get('/chat', (req, res) => {
-//     res.render('chat');
-// });
 
 const mensajes = [];
 

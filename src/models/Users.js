@@ -15,6 +15,10 @@ const userSchema = new Schema({
         type: String,
         unique: true
     },
+    age: {
+        type: String,
+        require: true
+    },
     gender: {
         type: String,
         required: true
