@@ -34,9 +34,9 @@ utiliza websocket para actualzar los productos cuando se de cada caso.
 
 Devuelve todos los productos
 
-#### `http://localhost:8080/api/products/?limit=:qty&page=:num&query=:cat&sort=:sort` 
-###(:qty => cantidad de productos por pagina, :num => numero de pagina, :cat => categoria de producto, :sort => orden (asc o desc) por precio)
+#### `http://localhost:8080/api/products/?limit=:qty&page=:num&query=:cat&sort=:sort`
 
+###(:qty => cantidad de productos por pagina, :num => numero de pagina, :cat => categoria de producto, :sort => orden (asc o desc) por precio)
 
 Devuelve los **:qty** primeros productos del N° **:num** de pagina asignada, por defecto la cantidad es 10 y la pagina es 1,
 ademas tenemos los parametros de query y sort los cuales hacen un filtro por **:cat** (Categoria) y un orden **:sort** (Asc o Desc) por el precio.
@@ -45,16 +45,12 @@ ademas tenemos los parametros de query y sort los cuales hacen un filtro por **:
 
 Devuelve el producto con el **id = :pid**.
 
-***
-
 ### `Peticiones POST API Products`
 
 #### `http://localhost:8080/api/products/`
 
 Crea un producto con los siguientes atributos **title, description, price, thumbnail, code, stock, category, status**
 siendo todos los campos obligatorios, a excepcion de _`thumbnail`_ y _`status`_.
-
-***
 
 ### `Peticiones PUT API Products`
 
@@ -70,8 +66,6 @@ Actualiza el carrito con **:cid** indicado, con una lista de productos enviados 
 
 Actualiza la cantidad de un producto enviado por body con el formato {"cant": **qty**}, a travez del **:pid** indicado del producto, 
 en el carrito indicado a traves de su **:pid**.
-
-***
 
 ### `Peticiones DELETE API Products`
 
@@ -104,3 +98,24 @@ Crea un nuevo carrito con un **id** auto incrementable y un Array vacio de produ
 #### `http://localhost:8080/api/carts/:cid/products/:pid` (:cid => codigo del carrito, :pid => codigo del producto)
 
 Agrega un producto al arreglo de productos del carrito indicado por el **id**.
+
+### `Peticiones PUT API Carts`
+
+#### `http://localhost:8080/api/carts/:cid` (:cid => codigo del carrito)
+
+Actualiza el carrito con **:cid** indicado, con una lista de productos enviados por **body**, con el formato {"products": [{"id_prod": **id**, "cant": **qty**}, ...]}.
+
+#### `http://localhost:8080/api/carts/:cid/products/:pid` (:cid => codigo del carrito, :pid => codigo del producto)
+
+Actualiza la cantidad de un producto enviado por body con el formato {"cant": **qty**}, a travez del **:pid** indicado del producto, 
+en el carrito indicado a traves de su **:pid**.
+
+### `Peticiones DELETE API Carts`
+
+#### `http://localhost:8080/api/carts/:cid/products/:pid` (:cid => codigo del carrito, :pid => codigo del producto)
+
+Elimina el producto con **:pid** indicado del carrito con **:cid** indicado.
+
+#### `http://localhost:8080/api/carts/:cid` (:cid => codigo del carrito)
+
+Elimina todos los productos de un carrito especificado por el **:cid**.
