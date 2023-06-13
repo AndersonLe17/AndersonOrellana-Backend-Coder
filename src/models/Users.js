@@ -13,11 +13,8 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
-        unique: true
-    },
-    age: {
-        type: String,
-        require: true
+        unique: true,
+        index: true
     },
     gender: {
         type: String,

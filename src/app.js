@@ -9,11 +9,15 @@ import './utils/bcrypt.js';
 import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/carts.routes.js";
 import messageRouter from "./routes/messages.routes.js";
+import sessionRouter from "./routes/session.routes.js";
+import userRouter from "./routes/users.routes.js";
 import { __dirname } from "./path.js";
 import multer from "multer";
 import { engine } from "express-handlebars";
 import * as path from 'path';
 import { Server } from "socket.io";
+import initializePassport from "./config/passport.js";
+import passport from "passport";
 
 // Configuracion
 const app = express();
@@ -41,16 +45,16 @@ app.set('io', io);
 // Middleware
 app.use(express.urlencoded({ extended: true })); // Permite poder realizar s    
 app.use(express.json()); // Permite ejecutar JSON en mi app
-app.use(cookieParser());
+app.use(cookieParser(process.env.SIGNED_COOKIE));
 app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.URL_MONGODB_ATLAS,
         mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
-        ttl: 15
+        ttl: 210
     }),
     secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false
+    resave: true,
+    saveUninitialized: true
 }));
 //MongoDB
 mongoose.connect(process.env.URL_MONGODB_ATLAS)
@@ -63,11 +67,18 @@ app.use((req, res, next) => {
     next();
 });
 
+//Config passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 //Routes
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
-app.use('/api/messages', messageRouter)
+app.use('/api/messages', messageRouter);
+app.use('/api/users', userRouter);
+app.use('/session', sessionRouter);
 app.use('/', express.static(__dirname + '/public'));
 app.post('/upload', upload.single('product'), (req, res) => {
     console.log(req.body);
